@@ -1,8 +1,8 @@
 package com.example.weather.ui.main
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weather.AppState
 import java.lang.Thread.sleep
 
 
@@ -13,18 +13,19 @@ class MainViewModel(
 ) :
     ViewModel() {
 
-    fun getData(): LiveData<Any> {
-        //передаем значения в LiveData
-        getDataFromLocalSource()
-        return liveDataToObserve
-    }
+    //получение LiveData
+    fun getLiveData() = liveDataToObserve
+
+    //получение данных погоды
+    fun getWeather() = getDataFromLocalSource()
 
     //имитация запроса к БД
     private fun getDataFromLocalSource() {
+        liveDataToObserve.value = AppState.Loading
         Thread {
             sleep(1000)
             //сохраняем данные в LiveData
-            liveDataToObserve.postValue(Any())
+            liveDataToObserve.postValue(AppState.Success(Any()))
         }.start()
     }
 }
