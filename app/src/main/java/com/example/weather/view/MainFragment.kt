@@ -1,14 +1,16 @@
-package com.example.weather.ui.main
+package com.example.weather.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.weather.AppState
+import com.example.weather.R
 import com.example.weather.databinding.MainFragmentBinding
+import com.example.weather.model.Weather
+import com.example.weather.viewmodel.AppState
+import com.example.weather.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class MainFragment : Fragment() {
@@ -37,10 +39,10 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         //подписываемся на обновления при изменении данных в LiveData
-        viewModel.getLiveData()
-            .observe(viewLifecycleOwner, Observer { renderData(AppState.Loading) })
+        viewModel.liveDataRequest()
+            .observe(viewLifecycleOwner) { renderData(it as AppState) }
         //запрашиваем данные
-        viewModel.getWeather()
+        viewModel.requestWeatherFromLocalSource()
     }
 
     private fun renderData(appState: AppState) {
@@ -48,7 +50,7 @@ class MainFragment : Fragment() {
             is AppState.Success -> {
                 val weatherData = appState.weatherData
                 binding.loadingLayout.visibility = View.GONE
-                Snackbar.make(binding.mainView, "Success", Snackbar.LENGTH_LONG).show()
+                setData(weatherData)
             }
             is AppState.Loading -> {
                 binding.loadingLayout.visibility = View.VISIBLE
@@ -57,10 +59,21 @@ class MainFragment : Fragment() {
                 binding.loadingLayout.visibility = View.GONE
                 Snackbar
                     .make(binding.mainView, "Error", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Reload") { viewModel.getWeather() }
+                    .setAction("Reload") { viewModel.requestWeatherFromLocalSource() }
                     .show()
             }
         }
+    }
+
+    private fun setData(weatherData: Weather) {
+        binding.cityName.text = weatherData.city.city
+        binding.cityCoordinates.text = String.format(
+            getString(R.string.city_coordinates),
+            weatherData.city.lat.toString(),
+            weatherData.city.lon.toString()
+        )
+        binding.temperatureValue.text = weatherData.temperature.toString()
+        binding.feelsLikeValue.text = weatherData.feelsLike.toString()
     }
 
     override fun onDestroyView() {
