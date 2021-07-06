@@ -15,21 +15,28 @@ class MainViewModel(
     ViewModel() {
 
     //получение LiveData
-    fun liveDataRequest() = liveDataToObserve
+    fun requestLiveData() = liveDataToObserve
 
-    //получение данных погоды из локального источника
-    fun requestWeatherFromLocalSource() = getDataFromLocalSource()
+    //получение данных погоды русских и зарубежных городов из локального источника
+    fun requestWeatherFromLocalSourceRus() = requestDataFromLocalSource(isRussian = true)
+    fun requestWeatherFromLocalSourceWorld() = requestDataFromLocalSource(isRussian = false)
 
     //получение данных погоды из сети
-    fun requestWeatherFromRemoteSource() = getDataFromLocalSource()
+    fun requestWeatherFromRemoteSource() = requestDataFromLocalSource(isRussian = true)
 
     //имитация запроса к БД
-    private fun getDataFromLocalSource() {
+    private fun requestDataFromLocalSource(isRussian: Boolean) {
         liveDataToObserve.value = AppState.Loading
         Thread {
+            //имитируем процес загрузки на секунду
             sleep(1000)
-            //сохраняем данные в LiveData
-            liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalStorage()))
+            //сохраняем данные в LiveData (состояние - приложение работает)
+            liveDataToObserve.postValue(
+                AppState.Success(
+                    if (isRussian) repositoryImpl.getWeatherFromLocalStorageRus()
+                    else repositoryImpl.getWeatherFromLocalStorageWorld()
+                )
+            )
         }.start()
     }
 }
