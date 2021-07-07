@@ -33,6 +33,7 @@ class MainViewModel(
             //сохраняем данные в LiveData (состояние - приложение работает)
             liveDataToObserve.postValue(
                 AppState.Success(
+                    //if возвращает значение
                     if (isRussian) repositoryImpl.getWeatherFromLocalStorageRus()
                     else repositoryImpl.getWeatherFromLocalStorageWorld()
                 )

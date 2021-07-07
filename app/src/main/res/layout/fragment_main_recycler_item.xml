@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/moscow" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/recycler_item_line_height"
