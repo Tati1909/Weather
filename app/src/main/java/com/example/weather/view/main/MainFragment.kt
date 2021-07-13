@@ -18,7 +18,12 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: MainViewModel
+    //Делегирование: private lateinit var viewModel: MainViewModel
+    //Теперь наша ViewModel создаётся через ленивую инициализацию, а не в методе onViewCreated, а
+    //новый фрагмент формируется через «?» и apply.
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
 
     //флаг: следит за "подгрузкой" данных
     private var isDataSetRus: Boolean = true
@@ -27,13 +32,12 @@ class MainFragment : Fragment() {
     private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
         override fun onItemViewClick(weather: Weather) {
             //к менеджеру фрагментов обращаемся через activity
-            val manager = activity?.supportFragmentManager
-            if (manager != null) {
-                //создаем Bundle
-                val bundle = Bundle()
-                bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
-                manager.beginTransaction()
-                    .add(R.id.container, DetailsFragment.newInstance(bundle))
+            //вместо проверки if (manager != null) -> ставим ? перед apply
+            activity?.supportFragmentManager?.apply {
+                beginTransaction()
+                    .add(R.id.container, DetailsFragment.newInstance(Bundle().apply {
+                        putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
+                    }))
                     .addToBackStack("")
                     .commitAllowingStateLoss()
             }
@@ -52,7 +56,6 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it as AppState) }
         viewModel.requestWeatherFromLocalSourceRus()
     }
@@ -69,8 +72,7 @@ class MainFragment : Fragment() {
         } else {
             viewModel.requestWeatherFromLocalSourceRus()
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_myhome)
-        }
-        isDataSetRus = !isDataSetRus
+        }.also { isDataSetRus = !isDataSetRus }
     }
 
     private fun renderData(appState: AppState) {
@@ -84,17 +86,25 @@ class MainFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
-                Snackbar
-                    .make(
-                        binding.mainFragmentFAB, getString(R.string.error),
-                        Snackbar.LENGTH_INDEFINITE
-                    )
-                    .setAction(getString(R.string.reload)) {
+                binding.mainFragmentLoadingLayout.showSnackBar(
+                    getString(R.string.error),
+                    getString(R.string.reload),
+                    {
                         viewModel.requestWeatherFromLocalSourceRus()
-                    }
-                    .show()
+                    })
             }
         }
+    }
+
+    // Создадим extension-функцию для Snackbar (при ошибке приложения)
+    // будем ее использовать в renderData у корневого экрана fragment_main.xml
+    private fun View.showSnackBar(
+        text: String,
+        actionText: String,
+        action: (View) -> Unit,
+        length: Int = Snackbar.LENGTH_INDEFINITE
+    ) {
+        Snackbar.make(this, text, length).setAction(actionText, action).show()
     }
 
     //этот интерфейс использует холдер
