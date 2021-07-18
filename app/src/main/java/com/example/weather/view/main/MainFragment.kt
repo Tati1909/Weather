@@ -19,8 +19,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Делегирование: private lateinit var viewModel: MainViewModel
-    //Теперь наша ViewModel создаётся через ленивую инициализацию, а не в методе onViewCreated, а
-    //новый фрагмент формируется через «?» и apply.
+    //Теперь наша ViewModel создаётся через ленивую инициализацию, а не в методе onViewCreated
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
@@ -71,7 +70,7 @@ class MainFragment : Fragment() {
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
         } else {
             viewModel.requestWeatherFromLocalSourceRus()
-            binding.mainFragmentFAB.setImageResource(R.drawable.ic_myhome)
+            binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
         }.also { isDataSetRus = !isDataSetRus }
     }
 
