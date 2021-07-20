@@ -15,7 +15,6 @@ import com.example.weather.model.WeatherDTO
 class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
-
     //WeatherBundle мы получим во время создания фрагмента
     //и воспользуемся координатами для составления запроса на сервер
     private lateinit var weatherBundle: Weather

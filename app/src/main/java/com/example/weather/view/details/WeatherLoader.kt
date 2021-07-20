@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Handler
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.weather.BuildConfig
 import com.example.weather.model.WeatherDTO
 import com.google.gson.Gson
 import java.io.BufferedReader
@@ -12,9 +13,6 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.stream.Collectors
 import javax.net.ssl.HttpsURLConnection
-
-//наш ключ разработчика
-private const val YOUR_API_KEY = "5de466c9-593a-4af8-b867-f8e318a353ef"
 
 //Класс, отвечающий за загрузку данных из интернета, и
 //callback-уведомление о событиях загрузки
@@ -38,7 +36,7 @@ class WeatherLoader(
                     //добавление заголовка в запрос urlConnection
                     urlConnection.addRequestProperty(
                         "X-Yandex-API-Key",
-                        YOUR_API_KEY
+                        BuildConfig.WEATHER_API_KEY
                     )
                     urlConnection.readTimeout = 10000
                     val bufferedReader =
