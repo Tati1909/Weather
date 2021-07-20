@@ -34,6 +34,18 @@
             tools:text="lt/ln: 55.755826, 37.617299900000035" />
 
         <TextView
+            android:id="@+id/weather_condition_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_default"
+            android:textSize="@dimen/feels_like_text_size"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/city_coordinates_text_view"
+            tools:text="Облачно" />
+
+        <TextView
             android:id="@+id/temperature_label_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +53,7 @@
             android:text="@string/temperature_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/city_coordinates_text_view" />
+            app:layout_constraintTop_toBottomOf="@+id/weather_condition_text_view" />
 
         <TextView
             android:id="@+id/temperature_value_text_view"
