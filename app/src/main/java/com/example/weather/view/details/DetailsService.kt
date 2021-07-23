@@ -18,7 +18,7 @@ import javax.net.ssl.HttpsURLConnection
 const val LATITUDE_EXTRA = "Latitude"
 const val LONGITUDE_EXTRA = "Longitude"
 private const val REQUEST_GET = "GET"
-private const val REQUEST_TIMEOUT = 10000
+private const val REQUEST_TIMEOUT = 10_000
 private const val REQUEST_API_KEY = "X-Yandex-API-Key"
 
 //Класс, в котором будем выполнять запрос на сервер с пом. IntentService
@@ -47,6 +47,8 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
             val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${lat}&lon=${lon}")
             lateinit var urlConnection: HttpsURLConnection
             try {
+                //Запрос на сервер не выполняется в отдельном потоке. В этом нет необходимости,
+                // так как IntentService и так работает в отдельном потоке
                 urlConnection = uri.openConnection() as HttpsURLConnection
                 urlConnection.apply {
                     requestMethod = REQUEST_GET
@@ -63,8 +65,6 @@ class DetailsService(name: String = "DetailService") : IntentService(name) {
                         getLines(BufferedReader(InputStreamReader(urlConnection.inputStream))),
                         WeatherDTO::class.java
                     )
-                //Запрос на сервер не выполняется в отдельном потоке. В этом нет необходимости,
-                // так как IntentService и так работает в отдельном потоке
                 onResponse(weatherDTO)
             } catch (e: Exception) {
                 onErrorRequest(e.message ?: "Empty error")
