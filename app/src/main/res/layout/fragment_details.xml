@@ -7,7 +7,7 @@
     android:background="@color/fragmentBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainView"
+        android:id="@+id/view_details_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

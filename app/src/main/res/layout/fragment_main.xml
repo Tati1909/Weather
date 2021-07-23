@@ -19,7 +19,7 @@
         android:id="@+id/mainFragmentFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="@dimen/margin_default"
         android:src="@drawable/ic_russia"
         app:tint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
