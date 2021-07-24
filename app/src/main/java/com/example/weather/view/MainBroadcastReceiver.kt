@@ -7,6 +7,7 @@ import android.widget.Toast
 
 //будем слушать широковещательные сообщения от операционной системы
 class MainBroadcastReceiver : BroadcastReceiver() {
+    //переопределяем метод BroadcastReceiver
     override fun onReceive(context: Context, intent: Intent) {
         StringBuilder().apply {
             append("СООБЩЕНИЕ ОТ СИСТЕМЫ\n")
