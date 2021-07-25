@@ -1,5 +1,6 @@
 package com.example.weather.view.details
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.model.Weather
 import com.example.weather.viewmodel.AppState
 import com.example.weather.viewmodel.DetailsViewModel
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.squareup.picasso.Picasso
 
 private const val MAIN_LINK = "https://api.weather.yandex.ru/v2/informers?"
@@ -46,8 +48,8 @@ class DetailsFragment : Fragment() {
 
     //обрабатываем состояние приложения и обеспечиваем корректное отображение на экране
     private fun renderData(appState: AppState) {
-        binding.viewDetailsFragment.visibility = View.VISIBLE
-        binding.loadingLayout.visibility = View.GONE
+        //binding.viewDetailsFragment.visibility = View.VISIBLE
+        //binding.loadingLayout.visibility = View.GONE
         when (appState) {
             is AppState.Success -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
@@ -91,6 +93,15 @@ class DetailsFragment : Fragment() {
             .get()
             .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
             .into(binding.headerIcon)
+
+        // загружаем тучку и солнышко
+        weather.icon?.let {
+            GlideToVectorYou.justLoadImage(
+                activity,
+                Uri.parse("https://yastatic.net/weather/i/icons/blueye/color/svg/${it}.svg"),
+                binding.weatherIcon
+            )
+        }
     }
 
     override fun onDestroyView() {

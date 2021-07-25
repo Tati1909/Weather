@@ -1,4 +1,4 @@
-package com.example.weather.utils
+package com.example.weather.weatherUtils
 
 /*fun convertDtoToModel(weatherDTO: WeatherDTO): List<Weather> {
     val fact: FactDTO = weatherDTO.fact!!

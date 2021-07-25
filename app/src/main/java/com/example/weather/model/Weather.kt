@@ -8,7 +8,8 @@ data class Weather(
     val city: City = getDefaultCity(),
     val temperature: Int = 0,
     val feelsLike: Int = 0,
-    val condition: String = "sunny"
+    val condition: String = "sunny",
+    val icon: String? = "bkn_n"
 ) : Parcelable
 
 
@@ -52,7 +53,7 @@ fun convertDtoToModel(weatherDTO: WeatherDTO): List<Weather> {
     return listOf(
         Weather(
             getDefaultCity(), fact.temperature!!, fact.feelsLike!!,
-            fact.condition!!
+            fact.condition!!, fact.icon
         )
     )
 }

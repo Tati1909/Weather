@@ -42,6 +42,16 @@
             app:layout_constraintTop_toBottomOf="@+id/city_name_text_view"
             tools:text="lt/ln: 55.755826, 37.617299900000035" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/weatherIcon"
+            android:layout_width="@dimen/weather_icon_width"
+            android:layout_height="@dimen/weather_icon_height"
+            android:layout_marginTop="@dimen/margin_default"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/city_coordinates_text_view"
+            tools:srcCompat="@drawable/ic_bkn_d" />
+
         <TextView
             android:id="@+id/weather_condition_text_view"
             android:layout_width="wrap_content"
@@ -51,7 +61,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/city_coordinates_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/weatherIcon"
             tools:text="Облачно" />
 
         <TextView

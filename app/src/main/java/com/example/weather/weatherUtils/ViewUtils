@@ -1,4 +1,4 @@
-package com.example.weather.utils
+package com.example.weather.weatherUtils
 
 /*fun View.showSnackBar(
     text: String,
