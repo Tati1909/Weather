@@ -1,0 +1,7 @@
+package com.example.weather.utils
+
+/*fun convertDtoToModel(weatherDTO: WeatherDTO): List<Weather> {
+    val fact: FactDTO = weatherDTO.fact!!
+    return listOf(Weather(getDefaultCity(), fact.temperature!!, fact.feelsLike!!,
+        fact.condition!!))
+} */

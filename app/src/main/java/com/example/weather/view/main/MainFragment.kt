@@ -14,6 +14,7 @@ import com.example.weather.viewmodel.AppState
 import com.example.weather.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 
+
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
@@ -85,7 +86,7 @@ class MainFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
-                binding.mainFragmentLoadingLayout.showSnackBar(
+                binding.mainFragmentRootView.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload),
                     {

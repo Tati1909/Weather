@@ -1,6 +1,10 @@
-package com.example.weather.model
+package com.example.weather.repository
 
-class RepositoryImpl : Repository {
+import com.example.weather.model.Weather
+import com.example.weather.model.getRussianCities
+import com.example.weather.model.getWorldCities
+
+class MainRepositoryImpl : MainRepository {
     //то же самое, что и :  override fun getWeatherFromServer(): Weather { return Weather() }
     override fun getWeatherFromServer() = Weather()
 

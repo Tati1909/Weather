@@ -2,15 +2,15 @@ package com.example.weather.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.model.Repository
-import com.example.weather.model.RepositoryImpl
+import com.example.weather.repository.MainRepository
+import com.example.weather.repository.MainRepositoryImpl
 import java.lang.Thread.sleep
 
 
 //ViewModel сохраняет текущее состояние экрана в процессе пересоздания UI
 class MainViewModel(
     private val liveDataToObserve: MutableLiveData<Any> = MutableLiveData(),
-    private val repositoryImpl: Repository = RepositoryImpl()
+    private val repositoryImpl: MainRepository = MainRepositoryImpl()
 ) :
     ViewModel() {
 

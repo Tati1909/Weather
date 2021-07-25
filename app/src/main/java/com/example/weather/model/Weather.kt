@@ -1,13 +1,14 @@
 package com.example.weather.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Weather(
     val city: City = getDefaultCity(),
     val temperature: Int = 0,
-    val feelsLike: Int = 0
+    val feelsLike: Int = 0,
+    val condition: String = "sunny"
 ) : Parcelable
 
 
@@ -39,8 +40,20 @@ fun getRussianCities() = listOf(
     Weather(City("Нижний Новгород", 56.2965039, 43.936059), 9, 10),
     Weather(City("Казань", 55.8304307, 49.06608060000008), 11, 12),
     Weather(City("Челябинск", 55.1644419, 61.4368432), 13, 14),
-        Weather(City("Омск", 54.9884804, 73.32423610000001), 15, 16),
-        Weather(City("Ростов-на-Дону", 47.2357137, 39.701505), 17, 18),
-        Weather(City("Уфа", 54.7387621, 55.972055400000045), 19, 20)
+    Weather(City("Омск", 54.9884804, 73.32423610000001), 15, 16),
+    Weather(City("Ростов-на-Дону", 47.2357137, 39.701505), 17, 18),
+    Weather(City("Уфа", 54.7387621, 55.972055400000045), 19, 20)
+)
+
+//Метод занимается преобразованием нашего Data transfer object(WeatherDTO) в
+//понятный для AppState формат
+fun convertDtoToModel(weatherDTO: WeatherDTO): List<Weather> {
+    val fact: FactDTO = weatherDTO.fact!!
+    return listOf(
+        Weather(
+            getDefaultCity(), fact.temperature!!, fact.feelsLike!!,
+            fact.condition!!
+        )
     )
+}
 
