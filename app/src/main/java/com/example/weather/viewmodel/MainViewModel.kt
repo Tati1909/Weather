@@ -26,13 +26,13 @@ class MainViewModel(
 
     //имитация запроса к БД
     private fun requestDataFromLocalSource(isRussian: Boolean) {
-        liveDataToObserve.value = AppState.Loading
+        liveDataToObserve.value = ScreenState.Loading
         Thread {
             //имитируем процес загрузки на секунду
             sleep(1000)
             //сохраняем данные в LiveData (состояние - приложение работает)
             liveDataToObserve.postValue(
-                AppState.Success(
+                ScreenState.Success(
                     //if возвращает значение
                     if (isRussian) repositoryImpl.getWeatherFromLocalStorageRus()
                     else repositoryImpl.getWeatherFromLocalStorageWorld()

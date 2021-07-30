@@ -56,12 +56,12 @@
             android:id="@+id/weather_condition_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginTop="@dimen/weather_icon_margin"
             android:textSize="@dimen/feels_like_text_size"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherIcon"
+            app:layout_constraintTop_toTopOf="@+id/weatherIcon"
             tools:text="Облачно" />
 
         <TextView

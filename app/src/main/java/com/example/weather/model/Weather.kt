@@ -27,7 +27,7 @@ fun getWorldCities() = listOf(
     Weather(City("Вашингтон", 38.9071923, -77.03687070000001), 15, 16),
     Weather(City("Киев", 50.4501, 30.523400000000038), 17, 18),
     Weather(City("Пекин", 39.90419989999999, 116.40739630000007), 19, 20)
-    )
+)
 
 //русские города
 fun getRussianCities() = listOf(
@@ -49,10 +49,10 @@ fun getRussianCities() = listOf(
 //Метод занимается преобразованием нашего Data transfer object(WeatherDTO) в
 //понятный для AppState формат
 fun convertDtoToModel(weatherDTO: WeatherDTO): List<Weather> {
-    val fact: FactDTO = weatherDTO.fact!!
+    val fact: FactDTO = weatherDTO.factInfo!!
     return listOf(
         Weather(
-            getDefaultCity(), fact.temperature!!, fact.feelsLike!!,
+            getDefaultCity(), fact.temperature!!, fact.feels_like!!,
             fact.condition!!, fact.icon
         )
     )

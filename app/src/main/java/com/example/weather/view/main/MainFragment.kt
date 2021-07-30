@@ -10,8 +10,8 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.model.Weather
 import com.example.weather.view.details.DetailsFragment
-import com.example.weather.viewmodel.AppState
 import com.example.weather.viewmodel.MainViewModel
+import com.example.weather.viewmodel.ScreenState
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -56,7 +56,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
-        viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it as AppState) }
+        viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it as ScreenState) }
         viewModel.requestWeatherFromLocalSourceRus()
     }
 
@@ -75,16 +75,16 @@ class MainFragment : Fragment() {
         }.also { isDataSetRus = !isDataSetRus }
     }
 
-    private fun renderData(appState: AppState) {
+    private fun renderData(appState: ScreenState) {
         when (appState) {
-            is AppState.Success -> {
+            is ScreenState.Success -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
                 adapter.setWeather(appState.weatherData)
             }
-            is AppState.Loading -> {
+            is ScreenState.Loading -> {
                 binding.mainFragmentLoadingLayout.visibility = View.VISIBLE
             }
-            is AppState.Error -> {
+            is ScreenState.Error -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
                 binding.mainFragmentRootView.showSnackBar(
                     getString(R.string.error),

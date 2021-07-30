@@ -10,12 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.model.Weather
-import com.example.weather.viewmodel.AppState
 import com.example.weather.viewmodel.DetailsViewModel
+import com.example.weather.viewmodel.ScreenState
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-
-private const val MAIN_LINK = "https://api.weather.yandex.ru/v2/informers?"
 
 //Здесь создаётся viewModel и подписка на неё
 class DetailsFragment : Fragment() {
@@ -47,23 +46,23 @@ class DetailsFragment : Fragment() {
     }
 
     //обрабатываем состояние приложения и обеспечиваем корректное отображение на экране
-    private fun renderData(appState: AppState) {
+    private fun renderData(appState: ScreenState) {
         //binding.viewDetailsFragment.visibility = View.VISIBLE
         //binding.loadingLayout.visibility = View.GONE
         when (appState) {
-            is AppState.Success -> {
+            is ScreenState.Success -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
                 binding.loadingLayout.visibility = View.GONE
                 setWeather(appState.weatherData[0])
             }
-            is AppState.Loading -> {
+            is ScreenState.Loading -> {
                 binding.viewDetailsFragment.visibility = View.GONE
                 binding.loadingLayout.visibility = View.VISIBLE
             }
-            is AppState.Error -> {
+            is ScreenState.Error -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
                 binding.loadingLayout.visibility = View.GONE
-                /*binding.viewDetailsFragment.showSnackBar(
+                binding.viewDetailsFragment.showSnackBarDetail(
                     getString(R.string.error),
                     getString(R.string.reload),
                     {
@@ -71,9 +70,19 @@ class DetailsFragment : Fragment() {
                             weatherBundle.city.lat,
                             weatherBundle.city.lon
                         )
-                    }) */
+                    })
             }
         }
+    }
+
+    // Создадим extension-функцию для Snackbar (при ошибке приложения)
+    private fun View.showSnackBarDetail(
+        text: String,
+        actionText: String,
+        action: (View) -> Unit,
+        length: Int = Snackbar.LENGTH_SHORT
+    ) {
+        Snackbar.make(this, text, length).setAction(actionText, action).show()
     }
 
     //отображвем данные
