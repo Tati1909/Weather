@@ -7,8 +7,8 @@ import com.example.weather.model.Weather
 // ошибка
 // загрузка данных
 
-sealed class AppState {
-        data class Success(val weatherData: List<Weather>) : AppState()
-        data class Error(val error: Throwable) : AppState()
-        object Loading : AppState()
+sealed class ScreenState {
+        data class Success(val weatherData: List<Weather>) : ScreenState()
+        data class Error(val error: Throwable) : ScreenState()
+        object Loading : ScreenState()
 }

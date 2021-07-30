@@ -2,15 +2,15 @@ package com.example.weather.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.model.Repository
-import com.example.weather.model.RepositoryImpl
+import com.example.weather.repository.MainRepository
+import com.example.weather.repository.MainRepositoryImpl
 import java.lang.Thread.sleep
 
 
 //ViewModel сохраняет текущее состояние экрана в процессе пересоздания UI
 class MainViewModel(
     private val liveDataToObserve: MutableLiveData<Any> = MutableLiveData(),
-    private val repositoryImpl: Repository = RepositoryImpl()
+    private val repositoryImpl: MainRepository = MainRepositoryImpl()
 ) :
     ViewModel() {
 
@@ -26,13 +26,13 @@ class MainViewModel(
 
     //имитация запроса к БД
     private fun requestDataFromLocalSource(isRussian: Boolean) {
-        liveDataToObserve.value = AppState.Loading
+        liveDataToObserve.value = ScreenState.Loading
         Thread {
             //имитируем процес загрузки на секунду
             sleep(1000)
             //сохраняем данные в LiveData (состояние - приложение работает)
             liveDataToObserve.postValue(
-                AppState.Success(
+                ScreenState.Success(
                     //if возвращает значение
                     if (isRussian) repositoryImpl.getWeatherFromLocalStorageRus()
                     else repositoryImpl.getWeatherFromLocalStorageWorld()
