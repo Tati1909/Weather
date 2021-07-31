@@ -2,11 +2,15 @@ package com.example.weather.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weather.app.App.Companion.getHistoryDao
+import com.example.weather.model.Weather
 import com.example.weather.model.WeatherDTO
 import com.example.weather.model.convertDtoToModel
 import com.example.weather.repository.DetailsRepository
-import com.example.weather.repository.DetailsRepositoryImpl
+import com.example.weather.repository.LocalRepository
 import com.example.weather.repository.RemoteDataSource
+import com.example.weather.repository.impls.DetailsRepositoryImpl
+import com.example.weather.repository.impls.LocalRepositoryImpl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,14 +24,20 @@ class DetailsViewModel(
     //создаём LiveData для передачи данных
     val detailsLiveData: MutableLiveData<ScreenState> = MutableLiveData(),
     //создаем репозиторий для получения данных
-    private val detailsRepositoryImpl: DetailsRepository =
-        DetailsRepositoryImpl(RemoteDataSource())
+    private val detailsRepository: DetailsRepository =
+        DetailsRepositoryImpl(RemoteDataSource()),
+    private val historyRepository: LocalRepository =
+        LocalRepositoryImpl(getHistoryDao())
 ) : ViewModel() {
-
     //метод осуществляет запрос на сервер через репозиторий
     fun requestWeatherFromRemoteSource(lat: Double, lon: Double) {
         detailsLiveData.value = ScreenState.Loading
-        detailsRepositoryImpl.getWeatherDetailsFromServer(lat, lon, callBack)
+        detailsRepository.getWeatherDetailsFromServer(lat, lon, callBack)
+    }
+
+    //сохраняем новый запрос в БД
+    fun saveCityToDB(weather: Weather) {
+        historyRepository.saveEntity(weather)
     }
 
     //здесь обрабатывается полученный ответ от сервера и принимается решение о состоянии экрана

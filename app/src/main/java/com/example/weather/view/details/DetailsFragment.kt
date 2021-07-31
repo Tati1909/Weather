@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
+import com.example.weather.model.City
 import com.example.weather.model.Weather
 import com.example.weather.viewmodel.DetailsViewModel
 import com.example.weather.viewmodel.ScreenState
@@ -88,6 +89,8 @@ class DetailsFragment : Fragment() {
     //отображвем данные
     private fun setWeather(weather: Weather) {
         val city = weatherBundle.city
+        //сохраняем новый запрос в БД
+        saveCity(city, weather)
         binding.cityNameTextView.text = city.city
         binding.cityCoordinatesTextView.text = String.format(
             getString(R.string.city_coordinates),
@@ -111,6 +114,18 @@ class DetailsFragment : Fragment() {
                 binding.weatherIcon
             )
         }
+    }
+
+    //сохраняем новый запрос в БД
+    private fun saveCity(city: City, weather: Weather) {
+        viewModel.saveCityToDB(
+            Weather(
+                city,
+                weather.temperature,
+                weather.feelsLike,
+                weather.condition
+            )
+        )
     }
 
     override fun onDestroyView() {

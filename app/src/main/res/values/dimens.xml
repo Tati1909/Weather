@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="margin_minimum">1dp</dimen>
+    <dimen name="margin_fragment_main_recycler_item_db">5dp</dimen>
     <dimen name="city_name_margin_top">10dp</dimen>
     <dimen name="margin_default">15dp</dimen>
     <dimen name="main_container_text_size">10sp</dimen>
@@ -9,7 +11,6 @@
     <dimen name="temperature_value_text_size">40sp</dimen>
     <dimen name="fab_icon_size">56dp</dimen>
     <dimen name="recycler_item_padding">10dp</dimen>
-    <dimen name="recycler_item_line_height">1dp</dimen>
     <dimen name="recycler_item_line_margin_end">20dp</dimen>
     <dimen name="town_header_height">100dp</dimen>
     <dimen name="weather_icon_width">150dp</dimen>

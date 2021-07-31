@@ -1,5 +1,6 @@
 package com.example.weather.view.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import com.example.weather.viewmodel.MainViewModel
 import com.example.weather.viewmodel.ScreenState
 import com.google.android.material.snackbar.Snackbar
 
+//Будем сохранять состояние приложения между его запусками c пом SharedPreferences
+private const val IS_WORLD_KEY = "LIST_OF_TOWNS_KEY"
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -27,6 +30,9 @@ class MainFragment : Fragment() {
 
     //флаг: следит за "подгрузкой" данных
     private var isDataSetRus: Boolean = true
+
+    //флаг для загрузки последнего открытого списка городов
+    private var isDataSetWorld: Boolean = false
 
     //создаем интерфейс(через object) и передаем его в адаптер
     private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
@@ -58,6 +64,26 @@ class MainFragment : Fragment() {
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
         viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it as ScreenState) }
         viewModel.requestWeatherFromLocalSourceRus()
+
+        showListOfTowns()
+    }
+
+    //Получаем у контекста значения настроек SharedPreferences, запрашиваем значение по ключу.
+    // Если его там нет, то возвращаем false по умолчанию — так произойдёт при первом запуске.
+    // Затем, в зависимости от значения, запрашиваем соответствующие данные у ViewModel.
+    private fun showListOfTowns() {
+        activity?.let {
+            //MODE_PRIVATE - режим доступа к файлу, т е к файлу может обращаться только само приложение
+            if (it.getPreferences(Context.MODE_PRIVATE).getBoolean(
+                    IS_WORLD_KEY,
+                    false
+                )
+            ) {
+                changeWeatherDataSet()
+            } else {
+                viewModel.requestWeatherFromLocalSourceRus()
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -66,13 +92,26 @@ class MainFragment : Fragment() {
     }
 
     private fun changeWeatherDataSet() {
-        if (isDataSetRus) {
-            viewModel.requestWeatherFromLocalSourceWorld()
-            binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
-        } else {
+        if (isDataSetWorld) {
             viewModel.requestWeatherFromLocalSourceRus()
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
-        }.also { isDataSetRus = !isDataSetRus }
+        } else {
+            viewModel.requestWeatherFromLocalSourceWorld()
+            binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
+        }.also { isDataSetWorld = !isDataSetWorld }
+
+        saveListOfTowns(isDataSetWorld)
+    }
+
+    //записываем настройки SharedPreferences
+    private fun saveListOfTowns(isDataSetWorld: Boolean) {
+        activity?.let {
+            with(it.getPreferences(Context.MODE_PRIVATE).edit()) {
+                //сохраняем настройки: editor.putBoolean("key1", "value1")
+                putBoolean(IS_WORLD_KEY, isDataSetWorld)
+                apply()
+            }
+        }
     }
 
     private fun renderData(appState: ScreenState) {

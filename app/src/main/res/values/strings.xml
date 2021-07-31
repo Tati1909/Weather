@@ -19,5 +19,6 @@
     <string name="handler_thread">Handler_Thread</string>
     <string name="service">Service</string>
     <string name="service_broadcast">Service + Broadcast</string>
+    <string name="menu_title_history">history</string>
 </resources>
 
