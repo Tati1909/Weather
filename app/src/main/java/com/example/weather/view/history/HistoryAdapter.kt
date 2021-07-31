@@ -57,15 +57,3 @@ class HistoryAdapter :
         }
     }
 }
-/*inner class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        //задаем значения при нажатии на элемент списка
-        fun bind(weather: Weather) {
-            //apply - применяем findViewById и setOnClickListener к itemView
-            //чтобы не было повторов
-            itemView.apply {
-                findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
-                    weather.city.city
-                setOnClickListener { onItemViewClickListener?.onItemViewClick(weather) }
-            }
-        }
-    }*/

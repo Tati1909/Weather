@@ -6,7 +6,11 @@ import com.example.weather.app.App.Companion.getHistoryDao
 import com.example.weather.model.Weather
 import com.example.weather.model.WeatherDTO
 import com.example.weather.model.convertDtoToModel
-import com.example.weather.repository.*
+import com.example.weather.repository.DetailsRepository
+import com.example.weather.repository.LocalRepository
+import com.example.weather.repository.RemoteDataSource
+import com.example.weather.repository.impls.DetailsRepositoryImpl
+import com.example.weather.repository.impls.LocalRepositoryImpl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

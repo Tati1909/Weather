@@ -9,7 +9,7 @@ import androidx.room.*
 @Dao
 interface HistoryDao {
     @Query("SELECT * FROM HistoryEntity")
-    fun all(): List<HistoryEntity>
+    fun getAll(): List<HistoryEntity>
 
     @Query("SELECT * FROM HistoryEntity WHERE city LIKE :city")
     fun getDataByWord(city: String): List<HistoryEntity>

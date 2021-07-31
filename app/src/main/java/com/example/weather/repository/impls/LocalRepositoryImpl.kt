@@ -1,18 +1,21 @@
-package com.example.weather.repository
+package com.example.weather.repository.impls
 
 import com.example.weather.model.City
 import com.example.weather.model.Weather
+import com.example.weather.repository.LocalRepository
 import com.example.weather.room.HistoryDao
 import com.example.weather.room.HistoryEntity
 
 class LocalRepositoryImpl(private val localDataSource: HistoryDao) :
     LocalRepository {
+    //получение истории запросов
     override fun getAllHistory(): List<Weather> {
-        return convertHistoryEntityToWeather(localDataSource.all())
+        return convertHistoryEntityToWeather(localDataSource.getAll())
     }
 
+    //сохранение очередного запроса в БД
     override fun saveEntity(weather: Weather) {
-        localDataSource.insert(convertWeatherToEntity(weather))
+        Thread { localDataSource.insert(convertWeatherToEntity(weather)) }.start()
     }
 
     private fun convertHistoryEntityToWeather(entityList: List<HistoryEntity>):

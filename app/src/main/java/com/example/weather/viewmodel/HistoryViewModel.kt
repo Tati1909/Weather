@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.app.App.Companion.getHistoryDao
 import com.example.weather.repository.LocalRepository
-import com.example.weather.repository.LocalRepositoryImpl
+import com.example.weather.repository.impls.LocalRepositoryImpl
 
 //ViewModel для нового экрана
 class HistoryViewModel(
