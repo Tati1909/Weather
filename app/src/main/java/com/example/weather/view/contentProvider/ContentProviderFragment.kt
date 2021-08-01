@@ -2,6 +2,7 @@ package com.example.weather.view.contentProvider
 
 import android.Manifest
 import android.content.ContentResolver
+import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Bundle
@@ -10,8 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.weather.R
 import com.example.weather.databinding.FragmentContentProviderBinding
 
 const val REQUEST_CODE = 42
@@ -127,12 +130,20 @@ class ContentProviderFragment : Fragment() {
 // Берём из Cursor столбец с именем
                         val name =
                             cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-                        //addView(it, name)
+                        addView(it, name)
                     }
                 }
             }
             cursorWithContacts?.close()
         }
+    }
+
+    //добавляем TextView(имена контактов) в контейнер во fragment_content_provider.xml
+    private fun addView(context: Context, textToShow: String) {
+        binding.containerForContacts.addView(AppCompatTextView(context).apply {
+            text = textToShow
+            textSize = resources.getDimension(R.dimen.main_container_text_size)
+        })
     }
 
     override fun onDestroyView() {
