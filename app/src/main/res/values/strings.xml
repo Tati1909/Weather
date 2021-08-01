@@ -20,5 +20,6 @@
     <string name="service">Service</string>
     <string name="service_broadcast">Service + Broadcast</string>
     <string name="menu_title_history">history</string>
+    <string name="content_provider">contect_provider</string>
 </resources>
 
