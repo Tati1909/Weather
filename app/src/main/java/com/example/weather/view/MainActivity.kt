@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.example.weather.GoogleMapsFragment
 import com.example.weather.R
 import com.example.weather.databinding.MainActivityBinding
+import com.example.weather.googlemaps.GoogleMapsFragment
 import com.example.weather.view.history.HistoryFragment
 import com.example.weather.view.main.MainFragment
 
