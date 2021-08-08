@@ -30,8 +30,7 @@ class App : Application() {
                         //через метод Room.databaseBuilder, который принимает три аргумента — контекст, база и имя БД
                         db = Room.databaseBuilder(
                             appInstance!!.applicationContext,
-                            HistoryDataBase::class.java,
-                            DB_NAME
+                            HistoryDataBase::class.java, DB_NAME
                         )
                             //allowMainThreadQueries позволяет делать запросы из основного потока
                             .allowMainThreadQueries()

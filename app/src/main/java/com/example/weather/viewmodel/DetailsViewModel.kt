@@ -36,7 +36,7 @@ class DetailsViewModel(
     }
 
     //сохраняем новый запрос в БД
-    fun saveCityToDB(weather: Weather) {
+    fun saveCityToDb(weather: Weather) {
         historyRepository.saveEntity(weather)
     }
 

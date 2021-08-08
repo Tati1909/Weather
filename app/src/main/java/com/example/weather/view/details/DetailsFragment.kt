@@ -118,7 +118,7 @@ class DetailsFragment : Fragment() {
 
     //сохраняем новый запрос в БД
     private fun saveCity(city: City, weather: Weather) {
-        viewModel.saveCityToDB(
+        viewModel.saveCityToDb(
             Weather(
                 city,
                 weather.temperature,

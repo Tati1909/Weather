@@ -12,7 +12,7 @@ interface HistoryDao {
     fun getAll(): List<HistoryEntity>
 
     @Query("SELECT * FROM HistoryEntity WHERE city LIKE :city")
-    fun getDataByWord(city: String): List<HistoryEntity>
+    fun getRequestHistory(city: String): List<HistoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(entity: HistoryEntity)
