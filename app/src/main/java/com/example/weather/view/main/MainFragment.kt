@@ -102,18 +102,14 @@ class MainFragment : Fragment() {
     private fun checkPermission() {
         activity?.let {
             when {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) ==
+                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) ==
                         PackageManager.PERMISSION_GRANTED -> {
                     getLocation()
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
                 -> {
-                    //повторный запрос
                     showRationaleDialog()
-                }
+                } //повторный запрос
                 else -> {
                     requestPermission()
                 }
