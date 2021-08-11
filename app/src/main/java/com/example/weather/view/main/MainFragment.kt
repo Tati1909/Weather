@@ -67,7 +67,7 @@ class MainFragment : Fragment() {
     }
 
     //флаг для загрузки последнего открытого списка городов
-    private var isDataSetWorld: Boolean = false
+    private var isDataSetWorld = false
 
     //создаем интерфейс(через object) и передаем его в адаптер
     private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
