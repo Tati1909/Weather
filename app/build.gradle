@@ -5,6 +5,8 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.secrets_gradle_plugin' version '0.5'
     id 'com.google.gms.google-services'
+    // Apply the Crashlytics Gradle plugin
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -21,16 +23,30 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file("keystore.jks")
+            storePassword 'privetik999'
+            keyAlias 'tati1909'
+            keyPassword 'privetik999'
+        }
+    }
+
     buildTypes.each {
         Properties properties = new Properties()
-        properties.load(project.rootProject.file("apikey.properties").newDataInputStream
-                ())
+        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
         def apiKey = properties.getProperty("yandex_weather_api_key", "")
         it.buildConfigField "String", "WEATHER_API_KEY", apiKey
+
+        Properties propertiesPasswordKey = new Properties()
+        propertiesPasswordKey.load(project.rootProject.file("passwordkey.properties").newDataInputStream())
+        def passwordKey = propertiesPasswordKey.getProperty("key_password", "")
+        it.buildConfigField "String", "KEY_PASSWORD", passwordKey
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -68,13 +84,19 @@ dependencies {
     implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
     //Room
     implementation 'androidx.room:room-runtime:2.3.0'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
     kapt 'androidx.room:room-compiler:2.3.0'
     //Google Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     //FireBase
-    implementation 'com.google.firebase:firebase-analytics-ktx:19.0.0'
-    implementation 'com.google.firebase:firebase-messaging-ktx:22.0.0'
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+    // Declare the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

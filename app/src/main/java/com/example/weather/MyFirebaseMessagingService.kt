@@ -57,17 +57,23 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
     }
 
+    // Создаем NotificationChannel, но только в API 26+, потому что
+    // класс NotificationChannel новый и его нет в библиотеке поддержки
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(
-        notificationManager:
-        NotificationManager
-    ) {
+    private fun createNotificationChannel(notificationManager: NotificationManager) {
         val name = "Channel name"
         val descriptionText = "Channel description"
+        //Уровень важности, видимый пользователем	Важность (Android 8.0 и выше)
+        //Срочно - Издает звук и отображается как предупреждение IMPORTANCE_HIGH	PRIORITY_HIGH
+        //Высокий - издает звук	IMPORTANCE_DEFAULT
+        //Средний - Нет звука	IMPORTANCE_LOW
+        //Низкий - Нет звука и не отображается в строке состояния	IMPORTANCE_MIN
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
             description = descriptionText
         }
+        // Зарегистрируем канал в системе; мы не можем изменить важность
+        // или другое поведение уведомления после этого
         notificationManager.createNotificationChannel(channel)
     }
 
@@ -75,7 +81,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     //нужен серверу для рассылки индивидуальных уведомлений. Этот метод вызывается один раз в
     //начале работы приложения. Его можно вызвать повторно только при переустановке приложения,
     //потому что токен у смартфона всегда только один.
-
     override fun onNewToken(token: String) {
 
         // If you want to send messages to this application instance or

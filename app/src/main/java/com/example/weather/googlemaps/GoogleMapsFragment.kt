@@ -33,7 +33,7 @@ class GoogleMapsFragment : Fragment() {
     private val callback = OnMapReadyCallback { googleMap ->
         //в мар мы будем хранить нашу карту
         map = googleMap
-        val initialPlace = LatLng(52.52000659999999, 13.404953999999975)
+        val initialPlace = LatLng(55.7538337, 37.6211812)
         googleMap.addMarker(
             MarkerOptions().position(initialPlace).title(getString(R.string.marker_start))
         )

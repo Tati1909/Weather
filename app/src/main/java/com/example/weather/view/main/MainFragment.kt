@@ -198,21 +198,21 @@ class MainFragment : Fragment() {
     //Если пользователь дал разрешение, получаем местоположение
     private fun getLocation() {
         activity?.let { context ->
-            //Если всё в порядке, обращаемся к ещё одному системному сервису — LocationManager.
-            // Это именно тот класс, через который мы будем получать координаты
+
             if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) ==
                 PackageManager.PERMISSION_GRANTED
             ) {
-// Получить менеджер геолокаций
+                //Если всё в порядке, обращаемся к ещё одному системному сервису — LocationManager.
+                // Это именно тот класс, через который мы будем получать координаты
+                // Получить менеджер геолокаций
                 val locationManager =
                     context.getSystemService(Context.LOCATION_SERVICE) as
                             LocationManager
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    val provider =
-                        locationManager.getProvider(LocationManager.GPS_PROVIDER)
+                    val provider = locationManager.getProvider(LocationManager.GPS_PROVIDER)
                     provider?.let {
 // Будем получать геоположение через каждые 60 секунд или каждые 100 метров
                         locationManager.requestLocationUpdates(
@@ -299,16 +299,13 @@ class MainFragment : Fragment() {
     }
 
     //общий метод (для списка и геолокации) для перехода на DetailsFragment
-    private fun openDetailsFragment(
-        weather: Weather
-    ) {
+    private fun openDetailsFragment(weather: Weather) {
         //к менеджеру фрагментов обращаемся через activity
         //вместо проверки if (manager != null) -> ставим ? перед apply
         activity?.supportFragmentManager?.apply {
             beginTransaction()
                 .add(
-                    R.id.container,
-                    DetailsFragment.newInstance(Bundle().apply {
+                    R.id.container, DetailsFragment.newInstance(Bundle().apply {
                         putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
                     })
                 )
