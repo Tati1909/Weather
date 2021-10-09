@@ -18,7 +18,7 @@ class RemoteDataSource {
     //Запрос создаётся сразу и присваивается переменной weatherApi. Он формируется достаточно
     //просто: через статический builder указываем базовую ссылку, добавляем конвертер —
     // знакомый нам Gson, но работающий теперь «под капотом» Retrofit.
-    private val weatherApi = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder()
         .baseUrl(WEATHER_URL)
         .addConverterFactory(
             GsonConverterFactory.create(
@@ -27,14 +27,14 @@ class RemoteDataSource {
         )
         //Добавили Interceptor
         .client(createOkHttpClient(WeatherApiInterceptor()))
-        .build().create(WeatherAPI::class.java)
+        .build().create(WeatherApiService::class.java)
 
     fun getWeatherDetails(lat: Double, lon: Double, callback: Callback<WeatherDTO>) {
-        weatherApi.getWeather(BuildConfig.WEATHER_API_KEY, lat, lon).enqueue(callback)
+        retrofit.getWeather(BuildConfig.WEATHER_API_KEY, lat, lon).enqueue(callback)
     }
 
-    //Interceptor — часть библиотеки OkHttp. Посредством Interceptor можно смотреть в логи
-    //запросов и ответов,
+    //Interceptor — часть библиотеки OkHttp. Посредством Interceptor можно смотреть в логах
+    //запросы и ответы
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(interceptor)

@@ -21,9 +21,6 @@ class MainViewModel(
     fun requestWeatherFromLocalSourceRus() = requestDataFromLocalSource(isRussian = true)
     fun requestWeatherFromLocalSourceWorld() = requestDataFromLocalSource(isRussian = false)
 
-    //получение данных погоды из сети
-    fun requestWeatherFromRemoteSource() = requestDataFromLocalSource(isRussian = true)
-
     //имитация запроса к БД
     private fun requestDataFromLocalSource(isRussian: Boolean) {
         liveDataToObserve.value = ScreenState.Loading
