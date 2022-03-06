@@ -9,8 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
 import com.example.weather.databinding.FragmentHistoryBinding
-import com.example.weather.viewmodel.HistoryViewModel
-import com.example.weather.viewmodel.ScreenState
+import com.example.weather.view.ScreenState
 import com.google.android.material.snackbar.Snackbar
 
 class HistoryFragment : Fragment() {

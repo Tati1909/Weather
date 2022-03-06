@@ -2,7 +2,7 @@ package com.example.weather.repository.impls
 
 import com.example.weather.model.City
 import com.example.weather.model.Weather
-import com.example.weather.repository.LocalRepository
+import com.example.weather.repository.api.LocalRepository
 import com.example.weather.room.HistoryDao
 import com.example.weather.room.HistoryEntity
 

@@ -11,10 +11,8 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.model.City
 import com.example.weather.model.Weather
-import com.example.weather.viewmodel.DetailsViewModel
-import com.example.weather.viewmodel.ScreenState
+import com.example.weather.view.ScreenState
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
 //Здесь создаётся viewModel и подписка на неё
@@ -33,7 +31,7 @@ class DetailsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,18 +41,16 @@ class DetailsFragment : Fragment() {
         weatherBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: Weather()
         viewModel.detailsLiveData.observe(viewLifecycleOwner) { renderData(it) }
         //получаем данные из удаленного источника
-        viewModel.requestWeatherFromRemoteSource(weatherBundle.city.lat, weatherBundle.city.lon)
+        viewModel.loadWeather(weatherBundle.city.lat, weatherBundle.city.lon)
     }
 
     //обрабатываем состояние приложения и обеспечиваем корректное отображение на экране
     private fun renderData(appState: ScreenState) {
-        //binding.viewDetailsFragment.visibility = View.VISIBLE
-        //binding.loadingLayout.visibility = View.GONE
         when (appState) {
             is ScreenState.Success -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
                 binding.loadingLayout.visibility = View.GONE
-                setWeather(appState.weatherData[0])
+                showWeather(appState.weatherData[0])
             }
             is ScreenState.Loading -> {
                 binding.viewDetailsFragment.visibility = View.GONE
@@ -67,7 +63,7 @@ class DetailsFragment : Fragment() {
                     getString(R.string.error),
                     getString(R.string.reload),
                     {
-                        viewModel.requestWeatherFromRemoteSource(
+                        viewModel.loadWeather(
                             weatherBundle.city.lat,
                             weatherBundle.city.lon
                         )
@@ -76,21 +72,11 @@ class DetailsFragment : Fragment() {
         }
     }
 
-    // Создадим extension-функцию для Snackbar (при ошибке приложения)
-    private fun View.showSnackBarDetail(
-        text: String,
-        actionText: String,
-        action: (View) -> Unit,
-        length: Int = Snackbar.LENGTH_SHORT
-    ) {
-        Snackbar.make(this, text, length).setAction(actionText, action).show()
-    }
-
     //отображвем данные
-    private fun setWeather(weather: Weather) {
+    private fun showWeather(weather: Weather) {
         val city = weatherBundle.city
         //сохраняем новый запрос в БД
-        saveCity(city, weather)
+        saveCityToDataBase(city, weather)
         binding.cityNameTextView.text = city.city
         binding.cityCoordinatesTextView.text = String.format(
             getString(R.string.city_coordinates),
@@ -117,7 +103,7 @@ class DetailsFragment : Fragment() {
     }
 
     //сохраняем новый запрос в БД
-    private fun saveCity(city: City, weather: Weather) {
+    private fun saveCityToDataBase(city: City, weather: Weather) {
         viewModel.saveCityToDb(
             Weather(
                 city,
