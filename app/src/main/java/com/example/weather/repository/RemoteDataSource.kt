@@ -18,19 +18,23 @@ class RemoteDataSource {
     //Запрос создаётся сразу и присваивается переменной weatherApi. Он формируется достаточно
     //просто: через статический builder указываем базовую ссылку, добавляем конвертер —
     // знакомый нам Gson, но работающий теперь «под капотом» Retrofit.
-    private val retrofit = Retrofit.Builder()
+    private val retrofit: ApiService = Retrofit.Builder()
         .baseUrl(WEATHER_URL)
-        .addConverterFactory(
-            GsonConverterFactory.create(
-                GsonBuilder().setLenient().create()
-            )
-        )
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         //Добавили Interceptor
         .client(createOkHttpClient(WeatherApiInterceptor()))
-        .build().create(WeatherApiService::class.java)
+        .build()
+        .create(ApiService::class.java)
 
+    /**
+     * enqueue используется для асинхронного запроса, execute - для синхронного
+     */
     fun getWeatherDetails(lat: Double, lon: Double, callback: Callback<WeatherDTO>) {
-        retrofit.getWeather(BuildConfig.WEATHER_API_KEY, lat, lon).enqueue(callback)
+        retrofit.getWeather(
+            BuildConfig.WEATHER_API_KEY,
+            lat,
+            lon
+        ).enqueue(callback)
     }
 
     //Interceptor — часть библиотеки OkHttp. Посредством Interceptor можно смотреть в логах
@@ -38,9 +42,7 @@ class RemoteDataSource {
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(interceptor)
-        httpClient.addInterceptor(
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-        )
+        httpClient.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         return httpClient.build()
     }
 

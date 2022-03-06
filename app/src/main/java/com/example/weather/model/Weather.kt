@@ -12,7 +12,6 @@ data class Weather(
     val icon: String? = "bkn_n"
 ) : Parcelable
 
-
 fun getDefaultCity() = City("Москва", 55.755826, 37.617299900000035)
 
 //зарубежные города
@@ -48,7 +47,7 @@ fun getRussianCities() = listOf(
 )
 
 //Метод занимается преобразованием нашего Data transfer object(WeatherDTO) в
-//понятный для AppState формат
+//понятный для AppState формат, т е десериализуем JSON в наши объекты
 fun convertDtoToModel(weatherDTO: WeatherDTO): List<Weather> {
     val fact: FactDTO = weatherDTO.factInfo!!
     return listOf(

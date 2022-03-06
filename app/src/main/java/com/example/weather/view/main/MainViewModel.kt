@@ -1,9 +1,10 @@
-package com.example.weather.viewmodel
+package com.example.weather.view.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.repository.MainRepository
+import com.example.weather.repository.api.MainRepository
 import com.example.weather.repository.impls.MainRepositoryImpl
+import com.example.weather.view.ScreenState
 import java.lang.Thread.sleep
 
 

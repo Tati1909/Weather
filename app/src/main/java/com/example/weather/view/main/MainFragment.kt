@@ -20,9 +20,8 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.model.City
 import com.example.weather.model.Weather
+import com.example.weather.view.ScreenState
 import com.example.weather.view.details.DetailsFragment
-import com.example.weather.viewmodel.MainViewModel
-import com.example.weather.viewmodel.ScreenState
 import com.google.android.material.snackbar.Snackbar
 import java.io.IOException
 
@@ -39,8 +38,7 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    //Делегирование: private lateinit var viewModel: MainViewModel
-    //Теперь наша ViewModel создаётся через ленивую инициализацию, а не в методе onViewCreated
+    //Теперь наша ViewModel создаётся через ленивую инициализацию
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
@@ -349,10 +347,16 @@ class MainFragment : Fragment() {
         saveListOfTowns(isDataSetWorld)
     }
 
-    //записываем настройки SharedPreferences
+    /**
+     * Сохраняем настройки SharedPreferences
+     * getActivity возвращает FragmentActivity, с которым в настоящее время связан этот фрагмент.
+     * Функция apply фиксирует свои изменения в SharedPreferences в памяти немедленно,
+     * но запускает асинхронную фиксацию на диск (в порядке очереди),
+     * и вы не будете уведомлены о каких-либо сбоях.
+     */
     private fun saveListOfTowns(isDataSetWorld: Boolean) {
-        activity?.let {
-            with(it.getPreferences(Context.MODE_PRIVATE).edit()) {
+        activity?.let { fragmentActivity ->
+            with(fragmentActivity.getPreferences(Context.MODE_PRIVATE).edit()) {
                 //сохраняем настройки: editor.putBoolean("key1", "value1")
                 putBoolean(IS_WORLD_KEY, isDataSetWorld)
                 apply()

@@ -1,4 +1,4 @@
-package com.example.weather.repository
+package com.example.weather.repository.api
 
 import com.example.weather.model.WeatherDTO
 
