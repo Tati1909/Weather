@@ -22,7 +22,7 @@ import com.example.weather.model.City
 import com.example.weather.model.Weather
 import com.example.weather.view.ScreenState
 import com.example.weather.view.details.DetailsFragment
-import com.google.android.material.snackbar.Snackbar
+import com.example.weather.view.showSnackBar
 import java.io.IOException
 
 //Будем сохранять состояние приложения между его запусками c пом SharedPreferences
@@ -38,9 +38,8 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    //Теперь наша ViewModel создаётся через ленивую инициализацию
     private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
+        ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     //слушатель, который будет получать новые координаты местоположения пользователя
@@ -67,19 +66,16 @@ class MainFragment : Fragment() {
     //флаг для загрузки последнего открытого списка городов
     private var isDataSetWorld = false
 
-    //создаем интерфейс(через object) и передаем его в адаптер
-    private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
-        override fun onItemViewClick(weather: Weather) {
-            openDetailsFragment(weather)
-        }
-    })
+    private val adapter by lazy {
+        CitiesAdapter(::openDetailsFragment)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        return binding.getRoot()
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -89,8 +85,9 @@ class MainFragment : Fragment() {
         //checkPermission проверяет, имеет ли данный пакет данное разрешение и
         // разрешена ли операция приложения, соответствующая этому разрешению.
         binding.mainFragmentFABLocation.setOnClickListener { checkPermission() }
-        viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it as ScreenState) }
-        viewModel.requestWeatherFromLocalSourceRus()
+        //подписываемся на LiveData и запрашиваем данные
+        viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it) }
+        viewModel.requestCities(true)
 
         showListOfTowns()
     }
@@ -325,22 +322,17 @@ class MainFragment : Fragment() {
             ) {
                 changeWeatherDataSet()
             } else {
-                viewModel.requestWeatherFromLocalSourceRus()
+                viewModel.requestCities(true)
             }
         }
     }
 
-    override fun onDestroy() {
-        adapter.removeListener()
-        super.onDestroy()
-    }
-
     private fun changeWeatherDataSet() {
         if (isDataSetWorld) {
-            viewModel.requestWeatherFromLocalSourceRus()
+            viewModel.requestCities(true)
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
         } else {
-            viewModel.requestWeatherFromLocalSourceWorld()
+            viewModel.requestCities(false)
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
         }.also { isDataSetWorld = !isDataSetWorld }
 
@@ -367,38 +359,22 @@ class MainFragment : Fragment() {
     private fun renderData(appState: ScreenState) {
         when (appState) {
             is ScreenState.Success -> {
-                binding.mainFragmentLoadingLayout.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 adapter.setWeather(appState.weatherData)
             }
             is ScreenState.Loading -> {
-                binding.mainFragmentLoadingLayout.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.VISIBLE
             }
             is ScreenState.Error -> {
-                binding.mainFragmentLoadingLayout.visibility = View.GONE
-                binding.mainFragmentRootView.showSnackBar(
+                binding.progressBar.visibility = View.GONE
+                binding.rootView.showSnackBar(
                     getString(R.string.error),
                     getString(R.string.reload),
                     {
-                        viewModel.requestWeatherFromLocalSourceRus()
+                        viewModel.requestCities(true)
                     })
             }
         }
-    }
-
-    // Создадим extension-функцию для Snackbar (при ошибке приложения)
-    // будем ее использовать в renderData у корневого экрана fragment_main.xml
-    private fun View.showSnackBar(
-        text: String,
-        actionText: String,
-        action: (View) -> Unit,
-        length: Int = Snackbar.LENGTH_INDEFINITE
-    ) {
-        Snackbar.make(this, text, length).setAction(actionText, action).show()
-    }
-
-    //этот интерфейс использует холдер
-    interface OnItemViewClickListener {
-        fun onItemViewClick(weather: Weather)
     }
 
     companion object {

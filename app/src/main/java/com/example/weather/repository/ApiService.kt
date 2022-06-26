@@ -1,6 +1,6 @@
 package com.example.weather.repository
 
-import com.example.weather.model.WeatherDTO
+import com.example.weather.model.WeatherResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -21,5 +21,5 @@ interface ApiService {
         @Header("X-Yandex-API-Key") token: String,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double
-    ): Call<WeatherDTO>
+    ): Call<WeatherResponse>
 }
