@@ -89,8 +89,8 @@ class MainFragment : Fragment() {
         // разрешена ли операция приложения, соответствующая этому разрешению.
         binding.mainFragmentFABLocation.setOnClickListener { checkPermission() }
         //подписываемся на LiveData и запрашиваем данные
-        viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it as ScreenState) }
-        viewModel.requestWeatherFromLocalSourceRus()
+        viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it) }
+        viewModel.requestCities(true)
 
         showListOfTowns()
     }
@@ -325,7 +325,7 @@ class MainFragment : Fragment() {
             ) {
                 changeWeatherDataSet()
             } else {
-                viewModel.requestWeatherFromLocalSourceRus()
+                viewModel.requestCities(true)
             }
         }
     }
@@ -337,10 +337,10 @@ class MainFragment : Fragment() {
 
     private fun changeWeatherDataSet() {
         if (isDataSetWorld) {
-            viewModel.requestWeatherFromLocalSourceRus()
+            viewModel.requestCities(true)
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
         } else {
-            viewModel.requestWeatherFromLocalSourceWorld()
+            viewModel.requestCities(false)
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
         }.also { isDataSetWorld = !isDataSetWorld }
 
@@ -379,7 +379,7 @@ class MainFragment : Fragment() {
                     getString(R.string.error),
                     getString(R.string.reload),
                     {
-                        viewModel.requestWeatherFromLocalSourceRus()
+                        viewModel.requestCities(true)
                     })
             }
         }

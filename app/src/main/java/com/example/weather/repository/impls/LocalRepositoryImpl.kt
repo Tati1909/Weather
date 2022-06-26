@@ -24,6 +24,6 @@ class LocalRepositoryImpl(private val localDataSource: HistoryDao) : LocalReposi
     }
 
     private fun convertWeatherToEntity(weather: Weather): HistoryEntity {
-        return HistoryEntity(0, weather.city.city, weather.temperature, weather.condition)
+        return HistoryEntity(0, weather.city.toString(), weather.temperature, weather.condition)
     }
 }

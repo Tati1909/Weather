@@ -2,17 +2,7 @@ package com.example.weather.model
 
 import com.google.gson.annotations.SerializedName
 
-//Data transfer object - объект передачи данных
-data class WeatherDTO(
-    /**
-     *     Объект информации о погоде, который включает массив объектов:
-     *     temp,feels_like, icon, condition, weend speed и др
-     */
-    @SerializedName("fact")
-    val factInfo: FactDTO?
-)
-
-data class FactDTO(
+data class FactResponse(
     @SerializedName("temp")
     val temperature: Int?,
     @SerializedName("feels_like")

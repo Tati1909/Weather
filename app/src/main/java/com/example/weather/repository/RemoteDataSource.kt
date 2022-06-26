@@ -1,7 +1,7 @@
 package com.example.weather.repository
 
 import com.example.weather.BuildConfig
-import com.example.weather.model.WeatherDTO
+import com.example.weather.model.WeatherResponse
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -29,7 +29,7 @@ class RemoteDataSource {
     /**
      * enqueue используется для асинхронного запроса, execute - для синхронного
      */
-    fun getWeatherDetails(lat: Double, lon: Double, callback: Callback<WeatherDTO>) {
+    fun getWeatherDetails(lat: Double, lon: Double, callback: Callback<WeatherResponse>) {
         retrofit.getWeather(
             BuildConfig.WEATHER_API_KEY,
             lat,
