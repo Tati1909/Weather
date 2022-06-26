@@ -66,12 +66,9 @@ class MainFragment : Fragment() {
     //флаг для загрузки последнего открытого списка городов
     private var isDataSetWorld = false
 
-    //создаем интерфейс(через object) и передаем его в адаптер
-    private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
-        override fun onItemViewClick(weather: Weather) {
-            openDetailsFragment(weather)
-        }
-    })
+    private val adapter by lazy {
+        CitiesAdapter(::openDetailsFragment)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -330,11 +327,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        adapter.removeListener()
-        super.onDestroy()
-    }
-
     private fun changeWeatherDataSet() {
         if (isDataSetWorld) {
             viewModel.requestCities(true)
@@ -383,11 +375,6 @@ class MainFragment : Fragment() {
                     })
             }
         }
-    }
-
-    //этот интерфейс использует холдер
-    interface OnItemViewClickListener {
-        fun onItemViewClick(weather: Weather)
     }
 
     companion object {
