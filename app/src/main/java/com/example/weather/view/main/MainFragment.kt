@@ -80,10 +80,8 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mainFragmentRecyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
-        //checkPermission проверяет, имеет ли данный пакет данное разрешение и
-        // разрешена ли операция приложения, соответствующая этому разрешению.
         binding.mainFragmentFABLocation.setOnClickListener { checkPermission() }
         //подписываемся на LiveData и запрашиваем данные
         viewModel.requestLiveData().observe(viewLifecycleOwner) { renderData(it) }
