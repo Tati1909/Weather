@@ -16,7 +16,7 @@ class MainViewModel(
     ViewModel() {
 
     //получение LiveData
-    fun requestLiveData() = liveDataToObserve
+    fun requestLiveData(): MutableLiveData<Any> = liveDataToObserve
 
     //получение данных погоды русских и зарубежных городов из локального источника
     fun requestWeatherFromLocalSourceRus() = requestDataFromLocalSource(isRussian = true)

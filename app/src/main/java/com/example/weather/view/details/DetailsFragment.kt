@@ -49,16 +49,16 @@ class DetailsFragment : Fragment() {
         when (appState) {
             is ScreenState.Success -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 showWeather(appState.weatherData[0])
             }
             is ScreenState.Loading -> {
                 binding.viewDetailsFragment.visibility = View.GONE
-                binding.loadingLayout.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.VISIBLE
             }
             is ScreenState.Error -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 binding.viewDetailsFragment.showSnackBarDetail(
                     getString(R.string.error),
                     getString(R.string.reload),
