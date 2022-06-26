@@ -4,6 +4,7 @@
     <string name="feels_like_label">Ощущается как</string>
     <string name="city_coordinates">lt/ln: %s, %s"</string>
     <string name="moscow">Москва</string>
+
     <string name="error">ошибка</string>
     <string name="reload">перезагрузить</string>
     <string name="threads">Threads</string>

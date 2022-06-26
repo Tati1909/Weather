@@ -34,6 +34,7 @@ class App : Application() {
                         )
                             //allowMainThreadQueries позволяет делать запросы из основного потока
                             .allowMainThreadQueries()
+                            .fallbackToDestructiveMigration()
                             .build()
                     }
                 }

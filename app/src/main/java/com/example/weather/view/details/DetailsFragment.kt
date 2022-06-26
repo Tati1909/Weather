@@ -24,7 +24,7 @@ class DetailsFragment : Fragment() {
     //и воспользуемся координатами для составления запроса на сервер
     private lateinit var weatherBundle: Weather
     private val viewModel: DetailsViewModel by lazy {
-        ViewModelProvider(this).get(DetailsViewModel::class.java)
+        ViewModelProvider(this)[DetailsViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -49,16 +49,16 @@ class DetailsFragment : Fragment() {
         when (appState) {
             is ScreenState.Success -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 showWeather(appState.weatherData[0])
             }
             is ScreenState.Loading -> {
                 binding.viewDetailsFragment.visibility = View.GONE
-                binding.loadingLayout.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.VISIBLE
             }
             is ScreenState.Error -> {
                 binding.viewDetailsFragment.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
                 binding.viewDetailsFragment.showSnackBarDetail(
                     getString(R.string.error),
                     getString(R.string.reload),
@@ -72,7 +72,6 @@ class DetailsFragment : Fragment() {
         }
     }
 
-    //отображвем данные
     private fun showWeather(weather: Weather) {
         val city = weatherBundle.city
         //сохраняем новый запрос в БД

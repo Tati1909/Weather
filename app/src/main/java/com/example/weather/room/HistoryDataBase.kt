@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 //указывает, создавать или нет файл в проекте, где будет храниться история версий БД. Это
 //совершенно необязательно, но в коммерческих проектах — практика хорошая. В классе также
 //требуется определить метод, возвращающий объект доступа к данным.
-@Database(entities = arrayOf(HistoryEntity::class), version = 1, exportSchema = false)
+@Database(entities = [HistoryEntity::class], version = 2, exportSchema = false)
 abstract class HistoryDataBase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
 }
