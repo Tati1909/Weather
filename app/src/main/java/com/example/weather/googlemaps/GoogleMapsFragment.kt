@@ -1,6 +1,7 @@
 package com.example.weather.googlemaps
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
@@ -17,7 +18,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import java.io.IOException
 
 class GoogleMapsFragment : Fragment() {
@@ -80,7 +85,7 @@ class GoogleMapsFragment : Fragment() {
                     )
                     binding.textAddressTextView.post {
                         binding.textAddressTextView.text =
-                            addresses[0].getAddressLine(0)
+                            addresses?.get(0)?.getAddressLine(0) ?: ""
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -131,7 +136,7 @@ class GoogleMapsFragment : Fragment() {
             Thread {
                 try {
                     val addresses = geoCoder.getFromLocationName(searchText, 1)
-                    if (addresses.size > 0) {
+                    if (!addresses.isNullOrEmpty() && addresses.size > 0) {
                         goToAddress(addresses, it, searchText)
                     }
                 } catch (e: IOException) {
@@ -151,6 +156,7 @@ class GoogleMapsFragment : Fragment() {
 
     //Добавим к нашей карте ещё одну полезную функцию — ориентирование по GPS. Это всего один
     //небольшой метод, который мы вызовем в нашем callback, когда карта будет готова:
+    @SuppressLint("MissingPermission")
     private fun activateMyLocation(googleMap: GoogleMap) {
         context?.let {
             val isPermissionGranted =
