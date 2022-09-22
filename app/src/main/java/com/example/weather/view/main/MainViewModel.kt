@@ -5,35 +5,24 @@ import androidx.lifecycle.ViewModel
 import com.example.weather.repository.api.MainRepository
 import com.example.weather.repository.impls.MainRepositoryImpl
 import com.example.weather.view.ScreenState
-import java.lang.Thread.sleep
-
 
 //ViewModel сохраняет текущее состояние экрана в процессе пересоздания UI
 class MainViewModel(
-    private val liveDataToObserve: MutableLiveData<Any> = MutableLiveData(),
-    private val repositoryImpl: MainRepository = MainRepositoryImpl()
+    private val liveDataToObserve: MutableLiveData<ScreenState> = MutableLiveData(),
+    private val repository: MainRepository = MainRepositoryImpl()
 ) :
     ViewModel() {
 
-    //получение LiveData
-    fun requestLiveData() = liveDataToObserve
+    fun getScreenState(): MutableLiveData<ScreenState> = liveDataToObserve
 
-    //получение данных погоды русских и зарубежных городов из локального источника
-    fun requestWeatherFromLocalSourceRus() = requestDataFromLocalSource(isRussian = true)
-    fun requestWeatherFromLocalSourceWorld() = requestDataFromLocalSource(isRussian = false)
-
-    //имитация запроса к БД
-    private fun requestDataFromLocalSource(isRussian: Boolean) {
+    fun loadCities(isRussian: Boolean) {
         liveDataToObserve.value = ScreenState.Loading
         Thread {
-            //имитируем процес загрузки на секунду
-            sleep(1000)
-            //сохраняем данные в LiveData (состояние - приложение работает)
             liveDataToObserve.postValue(
                 ScreenState.Success(
-                    //if возвращает значение
-                    if (isRussian) repositoryImpl.getWeatherFromLocalStorageRus()
-                    else repositoryImpl.getWeatherFromLocalStorageWorld()
+                    if (isRussian) {
+                        repository.getWeatherFromLocalStorageRus()
+                    } else repository.getWeatherFromLocalStorageWorld()
                 )
             )
         }.start()

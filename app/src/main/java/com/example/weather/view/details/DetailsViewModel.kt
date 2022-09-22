@@ -4,8 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.app.App.Companion.getHistoryDao
 import com.example.weather.model.Weather
-import com.example.weather.model.WeatherDTO
-import com.example.weather.model.convertDtoToModel
+import com.example.weather.model.WeatherResponse
 import com.example.weather.repository.RemoteDataSource
 import com.example.weather.repository.api.DetailsRepository
 import com.example.weather.repository.api.LocalRepository
@@ -32,7 +31,7 @@ class DetailsViewModel(
     //метод осуществляет запрос на сервер через репозиторий
     fun loadWeather(lat: Double, lon: Double) {
         detailsLiveData.value = ScreenState.Loading
-        detailsRepository.getWeatherDetailsFromServer(lat, lon, callBack)
+        detailsRepository.getWeather(lat, lon, callBack)
     }
 
     //сохраняем новый запрос в БД
@@ -41,14 +40,14 @@ class DetailsViewModel(
     }
 
     //здесь обрабатывается полученный ответ от сервера и принимается решение о состоянии экрана
-    private val callBack = object : Callback<WeatherDTO> {
+    private val callBack = object : Callback<WeatherResponse> {
         @Throws(IOException::class)
         // Вызывается, если ответ от сервера пришёл(даже пустой или с ошибкой)
         override fun onResponse(
-            call: Call<WeatherDTO>,
-            response: Response<WeatherDTO>
+            call: Call<WeatherResponse>,
+            response: Response<WeatherResponse>
         ) {
-            val serverResponse: WeatherDTO? = response.body()
+            val serverResponse: WeatherResponse? = response.body()
             detailsLiveData.postValue(
                 // Синхронизируем поток с потоком UI
                 //  isSuccessful - если ответ удачный от 200 до 300 не включая
@@ -61,7 +60,7 @@ class DetailsViewModel(
         }
 
         // Вызывается при сбое в процессе запроса на сервер
-        override fun onFailure(call: Call<WeatherDTO>, t: Throwable) {
+        override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
             detailsLiveData.postValue(
                 ScreenState.Error(
                     Throwable(
@@ -72,14 +71,14 @@ class DetailsViewModel(
         }
 
         //проверяем ответ
-        private fun checkResponse(serverResponse: WeatherDTO): ScreenState {
+        private fun checkResponse(serverResponse: WeatherResponse): ScreenState {
             val fact = serverResponse.factInfo
             //возвращаем или ошибку, или успех
             return if (fact?.temperature == null || fact.feels_like == null || fact.condition.isNullOrEmpty()
             ) {
                 ScreenState.Error(Throwable(CORRUPTED_DATA))
             } else {
-                ScreenState.Success(convertDtoToModel(serverResponse))
+                ScreenState.Success(serverResponse.toDomain())
             }
         }
     }
