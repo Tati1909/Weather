@@ -1,6 +1,7 @@
 package com.example.weather.view.main
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -188,6 +189,7 @@ class MainFragment : Fragment() {
     }
 
     //Если пользователь дал разрешение, получаем местоположение
+    @SuppressLint("MissingPermission")
     private fun getLocation() {
         activity?.let { context ->
 
@@ -200,9 +202,7 @@ class MainFragment : Fragment() {
                 //Если всё в порядке, обращаемся к ещё одному системному сервису — LocationManager.
                 // Это именно тот класс, через который мы будем получать координаты
                 // Получить менеджер геолокаций
-                val locationManager =
-                    context.getSystemService(Context.LOCATION_SERVICE) as
-                            LocationManager
+                val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     val provider = locationManager.getProvider(LocationManager.GPS_PROVIDER)
                     provider?.let {
@@ -254,7 +254,7 @@ class MainFragment : Fragment() {
                     1
                 )
                 binding.mainFragmentFAB.post {
-                    showAddressDialog(addresses[0].getAddressLine(0), location)
+                    addresses?.get(0)?.let { showAddressDialog(it.getAddressLine(0), location) }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
