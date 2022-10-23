@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -28,7 +29,6 @@ import java.io.IOException
 
 //Будем сохранять состояние приложения между его запусками c пом SharedPreferences
 private const val IS_WORLD_KEY = "LIST_OF_TOWNS_KEY"
-const val REQUEST_CODE = 42
 
 //У LocationManager мы получаем провайдера GPS. Если это не null, запрашиваем у него
 //координаты, передавая следующие аргументы:
@@ -36,6 +36,7 @@ private const val REFRESH_PERIOD = 60000L
 private const val MINIMAL_DISTANCE = 100f
 
 class MainFragment : Fragment() {
+
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
@@ -71,6 +72,17 @@ class MainFragment : Fragment() {
         CitiesAdapter(::openDetailsFragment)
     }
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                getLocation()
+            } else {
+                showRationaleDialog()
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -90,19 +102,16 @@ class MainFragment : Fragment() {
         showListOfTowns()
     }
 
-    //checkPermission проверяет, имеет ли данный пакет в UID и PID данное разрешение и
-    // разрешена ли операция приложения, соответствующая этому разрешению.
     private fun checkPermission() {
         activity?.let {
             when {
                 ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED -> {
+                    PackageManager.PERMISSION_GRANTED -> {
                     getLocation()
                 }
-                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-                -> {
+                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                     showRationaleDialog()
-                } //повторный запрос
+                }
                 else -> {
                     requestPermission()
                 }
@@ -110,71 +119,20 @@ class MainFragment : Fragment() {
         }
     }
 
-    //Если пользователь уже отказывал в разрешении, то отображаем диалоговое окно с объяснением,
-    //прежде чем запрашивать доступ:
     private fun showRationaleDialog() {
         activity?.let {
             AlertDialog.Builder(it)
                 .setTitle(getString(R.string.dialog_rationale_title))
                 .setMessage(getString(R.string.dialog_rationale_meaasge))
-                .setPositiveButton(getString(R.string.dialog_rationale_give_access))
-                { _, _ ->
-                    requestPermission()
-                }
+                .setPositiveButton(getString(R.string.dialog_rationale_give_access)) { _, _ -> requestPermission() }
                 .setNegativeButton(getString(R.string.dialog_rationale_decline)) { dialog, _ -> dialog.dismiss() }
                 .create()
                 .show()
         }
     }
 
-    //Если доступа на поиск GPS нет, то запрашиваем разрешение
     private fun requestPermission() {
-        requestPermissions(
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            REQUEST_CODE
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>, grantResults: IntArray
-    ) {
-        checkPermissionsResult(requestCode, grantResults)
-    }
-
-    private fun checkPermissionsResult(requestCode: Int, grantResults: IntArray) {
-        when (requestCode) {
-            REQUEST_CODE -> {
-                var grantedPermissions = 0
-                if ((grantResults.isNotEmpty())) {
-                    for (i in grantResults) {
-                        if (i == PackageManager.PERMISSION_GRANTED) {
-                            grantedPermissions++
-                        }
-                    }
-                    if (grantResults.size == grantedPermissions) {
-                        getLocation()
-                    } else {
-                        showDialog(
-                            //Если разрешения нет, то отображаем диалоговое окно. В нём уведомляем
-                            // пользователя, что для получения прогноза погоды по координатам,
-                            // нужно дать разрешение на доступ к GPS
-                            getString(R.string.dialog_title_no_gps),
-                            getString(R.string.dialog_message_no_gps)
-                        )
-                    }
-                } else {
-                    showDialog(
-                        //Если разрешения нет, то отображаем диалоговое окно. В нём уведомляем
-                        // пользователя, что для получения прогноза погоды по координатам,
-                        // нужно дать разрешение на доступ к GPS
-                        getString(R.string.dialog_title_no_gps),
-                        getString(R.string.dialog_message_no_gps)
-                    )
-                }
-                return
-            }
-        }
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     private fun showDialog(title: String, message: String) {
@@ -188,51 +146,38 @@ class MainFragment : Fragment() {
         }
     }
 
-    //Если пользователь дал разрешение, получаем местоположение
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         activity?.let { context ->
 
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                //Если всё в порядке, обращаемся к ещё одному системному сервису — LocationManager.
-                // Это именно тот класс, через который мы будем получать координаты
-                // Получить менеджер геолокаций
-                val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    val provider = locationManager.getProvider(LocationManager.GPS_PROVIDER)
-                    provider?.let {
+            /** Обращаемся к ещё одному системному сервису — LocationManager.
+            Это именно тот класс, через который мы будем получать координаты */
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                val provider = locationManager.getProvider(LocationManager.GPS_PROVIDER)
+                provider?.let {
 // Будем получать геоположение через каждые 60 секунд или каждые 100 метров
-                        locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            REFRESH_PERIOD,
-                            MINIMAL_DISTANCE,
-                            onLocationListener
-                        )
-                    }
-                } else {
-                    val location =
-                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                    if (location == null) {
-                        showDialog(
-                            getString(R.string.dialog_title_gps_turned_off),
-                            getString(R.string.dialog_message_last_location_unknown)
-                        )
-                    } else {
-                        getAddressAsync(context, location)
-                        showDialog(
-                            getString(R.string.dialog_title_gps_turned_off),
-                            getString(R.string.dialog_message_last_known_location)
-                        )
-                    }
+                    locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        REFRESH_PERIOD,
+                        MINIMAL_DISTANCE,
+                        onLocationListener
+                    )
                 }
             } else {
-                //На всякий случай проверяем разрешения. Если их нет, вызываем showRationaleDialog
-                showRationaleDialog()
+                val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                if (location == null) {
+                    showDialog(
+                        getString(R.string.dialog_title_gps_turned_off),
+                        getString(R.string.dialog_message_last_location_unknown)
+                    )
+                } else {
+                    getAddressAsync(context, location)
+                    showDialog(
+                        getString(R.string.dialog_title_gps_turned_off),
+                        getString(R.string.dialog_message_last_known_location)
+                    )
+                }
             }
         }
     }
@@ -375,6 +320,7 @@ class MainFragment : Fragment() {
     }
 
     companion object {
+
         fun newInstance() =
             MainFragment()
     }
